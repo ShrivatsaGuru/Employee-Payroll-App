@@ -5,7 +5,7 @@ import user.*;
 import repository.*;
 import validation.*;
 import session.Session;
-
+import dashboard.*;
 import payroll.*;
 
 
@@ -61,7 +61,7 @@ public class Main {
                 Session s = auth.loginByName(u, p);
                 if (s != null) {
                     Employee emp = EmployeeRepository.getEmployeeByName(u);
-
+                   
                     // UC3: Generate payslip (simple interactive)
                     System.out.print("Generate payslip now? (y/n): ");
                     if (sc.nextLine().trim().equalsIgnoreCase("y")) {
@@ -76,6 +76,8 @@ public class Main {
 
                         var payslip = payroll.generatePayslip(emp, scmp);
                         System.out.println(payslip); // print (UC3)
+                        var dash = dashboard.DashboardFactory.getDashboard(emp);
+                        dash.show(emp, payroll.getAll()); // show dashboard (UC5)
 
                         // UC4: Offer to download as text
                         System.out.print("Download payslip as text? (y/n): ");
@@ -86,6 +88,8 @@ public class Main {
                         }
                     }
                 }
+                // --- UC5: Show dashboard automatically after login ---
+             
                 System.out.println("-----------------------------------");
             }
         }

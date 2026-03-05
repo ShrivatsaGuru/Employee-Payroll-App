@@ -13,7 +13,8 @@ public class Payslip {
 
     private static final double PF_RATE  = 0.12;
     private static final double TAX_RATE = 0.10;
-
+    private final long generatedAt = System.currentTimeMillis();
+    public long getGeneratedAt() { return generatedAt; }
     public Payslip(Employee employee, SalaryComponents sc) {
         this.employee = employee;
         this.sc = sc;
