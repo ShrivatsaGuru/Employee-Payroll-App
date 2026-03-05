@@ -6,6 +6,7 @@ As well as a method to hash passwords using SHA-256.
 Version: 1.0
 Author: Shrivatsa Guru
  */
+package validation;
 public class Validator {
 
     public boolean validateEmail(String email) throws ValidationException {
@@ -24,14 +25,4 @@ public class Validator {
         return true;
     }
 
-    public String hashPassword(String password) throws ValidationException {
-        try {
-            byte[] hashed = java.security.MessageDigest
-                    .getInstance("SHA-256")
-                    .digest(password.getBytes(java.nio.charset.StandardCharsets.UTF_8));
-            return java.util.HexFormat.of().formatHex(hashed);
-        } catch (java.security.NoSuchAlgorithmException e) {
-            throw new ValidationException("Error occurred while hashing password");
-        }
-    }
 }

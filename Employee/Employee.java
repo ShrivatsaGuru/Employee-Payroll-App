@@ -9,6 +9,7 @@ Data is kept private and controlled through the class.
 * Version: 1.0
 * @author Shrivatsa Guru
  */
+package employee;   
 public class Employee {
 
     private int empId;

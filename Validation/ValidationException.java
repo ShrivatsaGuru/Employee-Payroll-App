@@ -7,8 +7,8 @@ such as invalid email formats or phone numbers
 Version: 1.0
 Author: Shrivatsa Guru
  */
-class ValidationException extends Exception {
-
+package validation;
+public class ValidationException extends Exception {
     public ValidationException(String message) {
         super(message);
     }
