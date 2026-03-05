@@ -1,8 +1,8 @@
 package user;
-
-public class RegularEmployee extends User {
-    public RegularEmployee(String username, String email, String phone, String passwordHash) {
-        super(username, email, phone, passwordHash, "EMPLOYEE");
+import employee.*;
+public class RegularEmployee extends Employee {
+    public RegularEmployee(int empId, String name, String email, String phone, String passwordHash) {
+        super(empId, name, email, phone, passwordHash, "EMPLOYEE");
     }
     @Override public boolean authenticate(String providedHash) {
         return this.passwordHash.equals(providedHash);

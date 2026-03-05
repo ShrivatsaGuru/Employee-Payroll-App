@@ -1,65 +1,31 @@
-/*
----------Employee Class---------
-This class represents an Employee entity.
-* Core OOP concept introduced here:
-* Encapsulation
+package employee;
 
-Data is kept private and controlled through the class.
+public abstract class Employee {
+    protected final int empId;
+    protected final String name;         // username for login
+    protected final String email;
+    protected final String phone;
+    protected final String passwordHash; // stored hash
+    protected final String role;         // "EMPLOYEE" or "MANAGER"
 
-* Version: 1.0
-* @author Shrivatsa Guru
- */
-package employee;   
-public class Employee {
-
-    private int empId;
-    private String name;
-    private String email;
-    private int phoneNumber;
-    private String userName;
-    private String password;
-
-    private UserAccount userAccount;
-
-    public String getUserName() {
-        return this.userName;
-    }
-
-    public String getPassword() {
-        return this.password;
-    }
-
-    public int getEmpId() {
-        return this.empId;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
-
-    public int getPhoneNumber() {
-        return this.phoneNumber;
-    }
-
-    public Employee(int empId, String name, String email, int phoneNumber, String userName, String password) {
+    protected Employee(int empId, String name, String email, String phone, String passwordHash, String role) {
         this.empId = empId;
         this.name = name;
         this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.userName = userName;
-        this.password = password;
+        this.phone = phone;
+        this.passwordHash = passwordHash;
+        this.role = role;
     }
 
-    public void displayEmployeeDetails() {
-        System.out.println("Employee ID: " + empId);
-        System.out.println("Name: " + name);
-        System.out.println("Email: " + email);
-        System.out.println("Phone Number: " + phoneNumber);
-        System.out.println("Username: " + userName);
-    }
+    public int getEmpId() { return empId; }
+    public String getName() { return name; }
+    public String getRole() { return role; }
+    public String getPasswordHash() { return passwordHash; }
 
+    // Polymorphic: subclasses can add policy
+    public abstract boolean authenticate(String providedHash);
+
+    @Override public String toString() {
+        return role + "{id=" + empId + ", name='" + name + "', email='" + email + "', phone='" + phone + "'}";
+    }
 }

@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 
 public final class PasswordEncoder {
     private PasswordEncoder() {}
+
     public static String sha256(String raw) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

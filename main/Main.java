@@ -6,6 +6,7 @@ import repository.*;
 import validation.*;
 import session.Session;
 
+
 import java.util.Scanner;
 
 public class Main {
@@ -14,10 +15,12 @@ public class Main {
         AuthService auth = new AuthService();
 
         try (Scanner sc = new Scanner(System.in)) {
-            System.out.println("=== UC1: Employee Registration ===");
-            System.out.println("Enter users (blank username to stop).");
-                System.out.print("Username: ");
-                String username = sc.nextLine().trim();
+            // ---------- UC1: Registration ----------
+            System.out.println("=== UC1: Register Employees (blank name to stop) ===");
+            while (true) {
+                System.out.print("Name (username): ");
+                String name = sc.nextLine().trim();
+                if (name.isEmpty()) break;
 
                 System.out.print("Email: ");
                 String email = sc.nextLine().trim();
@@ -31,36 +34,31 @@ public class Main {
                 System.out.print("Password: ");
                 String pass = sc.nextLine();
 
-                boolean ok = reg.register(username, email, phone, role, pass);
-                System.out.println(ok ? "User Registered " : " Registration failed.(check inputs)");
+                Employee e = reg.register(name, email, phone, role, pass);
+                System.out.println(e != null ? "[UC1] Registered ✔ " + e : "[UC1] Registration failed ✖ (check inputs)");
                 System.out.println();
-                
-            if (reg.count() == 0) {
+            }
+
+            if (EmployeeRepository.count() == 0) {
                 System.out.println("No users registered. Exiting.");
                 return;
             }
 
-            System.out.println("\n=== UC2: Login & Authentication ===");
-            System.out.println("Type 'exit' as username to quit.");
+            // ---------- UC2: Authentication ----------
+            System.out.println("\n=== UC2: Login (type 'exit' to quit) ===");
             while (true) {
                 System.out.print("Username: ");
                 String u = sc.nextLine().trim();
                 if ("exit".equalsIgnoreCase(u)) break;
-                User found = reg.find(u);
-                if (found == null) {
-                    System.out.println("[Auth] Unknown user");
-                    continue;
-                }
+
                 System.out.print("Password: ");
                 String p = sc.nextLine();
 
-                Session s = auth.login(found, p);
+                Session s = auth.loginByName(u, p); // uses repository HashMaps internally
                 if (s != null) {
                     System.out.println("Session started for " + s.getUsername() + " (expired? " + s.isExpired() + ")");
-                    System.out.println(found.getRole().equals("MANAGER") ? "-> Manager Dashboard" : "-> Employee Dashboard");
-                } else {
-                    System.out.println("Login failed. Try again.");
                 }
+                System.out.println("-----------------------------------");
             }
         }
     }
