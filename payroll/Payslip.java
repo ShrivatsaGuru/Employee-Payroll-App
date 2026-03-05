@@ -3,28 +3,56 @@ package payroll;
 import employee.Employee;
 
 /**
- * UC3: Payslip (AGGREGATION: HAS-A Employee, COMPOSITION: HAS-A SalaryComponents)
- * - Computes gross, statutory deductions (PF/Tax), and net.
- * - Kept deliberately simple and readable.
+ * UC3 + UC4:
+ * - UC3: calculates gross/deductions/net and formats slip.
+ * - UC4: equals/hashCode, deep copy, and simple accessor for employee id.
  */
 public class Payslip {
-    private final Employee employee;          // aggregation
-    private final SalaryComponents sc;        // composition
+    private final Employee employee;   // aggregation
+    private final SalaryComponents sc; // composition
 
-    // Simple statutory rules for demo (tweak freely):
-    private static final double PF_RATE  = 0.12;   // 12% of basic
-    private static final double TAX_RATE = 0.10;   // 10% of gross
+    private static final double PF_RATE  = 0.12;
+    private static final double TAX_RATE = 0.10;
 
     public Payslip(Employee employee, SalaryComponents sc) {
         this.employee = employee;
         this.sc = sc;
     }
 
+    public int getEmployeeId() { return employee.getEmpId(); }
+
     public double gross() { return sc.getBasic() + sc.sumAllowances(); }
     public double pf()    { return sc.getBasic() * PF_RATE; }
     public double tax()   { return gross() * TAX_RATE; }
     public double totalDeductions() { return pf() + tax() + sc.sumOtherDeductions(); }
     public double net()   { return gross() - totalDeductions(); }
+
+    // UC4: deep copy (clone-like) to preserve original integrity
+    public Payslip copy() {
+        SalaryComponents cpy = new SalaryComponents()
+                .withBasic(sc.getBasic())
+                .withAllowances(sc.allowancesCopy())
+                .withDeductions(sc.deductionsCopy());
+        return new Payslip(employee, cpy); // Employee ref kept for identity; values are re-computed
+    }
+
+    // UC4: equals/hashCode based on employee identity + computed totals
+    @Override public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Payslip)) return false;
+        Payslip other = (Payslip) o;
+        return this.employee.getEmpId() == other.employee.getEmpId()
+                && Double.compare(this.gross(), other.gross()) == 0
+                && Double.compare(this.net(),   other.net())   == 0;
+    }
+    @Override public int hashCode() {
+        int r = Integer.hashCode(employee.getEmpId());
+        long g = Double.doubleToLongBits(gross());
+        long n = Double.doubleToLongBits(net());
+        r = 31 * r + (int)(g ^ (g >>> 32));
+        r = 31 * r + (int)(n ^ (n >>> 32));
+        return r;
+    }
 
     @Override
     public String toString() {

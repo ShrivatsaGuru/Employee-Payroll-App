@@ -6,8 +6,8 @@ import repository.*;
 import validation.*;
 import session.Session;
 
-// ---- UC3 imports ----
 import payroll.*;
+
 
 import java.util.Scanner;
 
@@ -16,6 +16,7 @@ public class Main {
         RegistrationService reg = new RegistrationService();
         AuthService auth = new AuthService();
         PayrollService payroll = new PayrollService();
+        DownloadService downloader = new DownloadService();
 
         try (Scanner sc = new Scanner(System.in)) {
             // ---------- UC1: Registration ----------
@@ -47,7 +48,7 @@ public class Main {
                 return;
             }
 
-            // ---------- UC2 + UC3: Login then (optionally) generate payslip ----------
+            // ---------- UC2 + UC3 + UC4 ----------
             System.out.println("\n=== UC2: Login (type 'exit' to quit) ===");
             while (true) {
                 System.out.print("Username: ");
@@ -57,13 +58,13 @@ public class Main {
                 System.out.print("Password: ");
                 String p = sc.nextLine();
 
-                Session s = auth.loginByName(u, p); // uses repository under the hood
+                Session s = auth.loginByName(u, p);
                 if (s != null) {
-                    // ---- UC3 prompt: simple, optional step after successful auth ----
                     Employee emp = EmployeeRepository.getEmployeeByName(u);
+
+                    // UC3: Generate payslip (simple interactive)
                     System.out.print("Generate payslip now? (y/n): ");
-                    String ans = sc.nextLine().trim();
-                    if (ans.equalsIgnoreCase("y")) {
+                    if (sc.nextLine().trim().equalsIgnoreCase("y")) {
                         double basic = readDouble(sc, "Enter Basic Pay: ");
                         double[] allowances = readDoubleList(sc, "Enter Allowances (comma-separated, or blank): ");
                         double[] otherDeds  = readDoubleList(sc, "Enter Other Deductions (comma-separated, or blank): ");
@@ -73,7 +74,16 @@ public class Main {
                                 .withAllowances(allowances)
                                 .withDeductions(otherDeds);
 
-                        System.out.println(payroll.generatePayslip(emp, scmp)); // prints nicely
+                        var payslip = payroll.generatePayslip(emp, scmp);
+                        System.out.println(payslip); // print (UC3)
+
+                        // UC4: Offer to download as text
+                        System.out.print("Download payslip as text? (y/n): ");
+                        if (sc.nextLine().trim().equalsIgnoreCase("y")) {
+                            DownloadedPayslip dl = downloader.downloadAsText(payslip);
+                            System.out.println("Saved to: " + dl.getFullPath());
+                            System.out.println("Expired? " + dl.isExpired());
+                        }
                     }
                 }
                 System.out.println("-----------------------------------");
@@ -81,13 +91,12 @@ public class Main {
         }
     }
 
-    // ---- Small helpers to keep main tidy ----
+    // --- small input helpers ---
     private static double readDouble(Scanner sc, String prompt) {
         System.out.print(prompt);
         String in = sc.nextLine().trim();
         try { return Double.parseDouble(in); } catch (Exception e) { return 0.0; }
     }
-
     private static double[] readDoubleList(Scanner sc, String prompt) {
         System.out.print(prompt);
         String line = sc.nextLine().trim();
@@ -95,8 +104,7 @@ public class Main {
         String[] parts = line.split(",");
         double[] out = new double[parts.length];
         for (int i = 0; i < parts.length; i++) {
-            try { out[i] = Double.parseDouble(parts[i].trim()); }
-            catch (Exception e) { out[i] = 0.0; }
+            try { out[i] = Double.parseDouble(parts[i].trim()); } catch (Exception e) { out[i] = 0.0; }
         }
         return out;
     }

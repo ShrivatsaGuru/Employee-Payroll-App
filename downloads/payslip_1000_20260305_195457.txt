@@ -1,0 +1,13 @@
+
+=========== PAYSLIP ===========
+Employee : shri (ID: 1000, Role: MANAGER)
+--------------------------------
+Basic            : 100000.00
+Allowances (sum) : 1000.00
+GROSS            : 101000.00
+PF (12% basic)   : 12000.00
+Tax (10% gross)  : 10100.00
+Other Deductions : 10000.00
+TOTAL DEDUCTIONS : 32100.00
+NET PAY          : 68900.00
+================================
