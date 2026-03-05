@@ -1,28 +1,29 @@
-/*
-This class is responsible for validating user input and hashing passwords.
-It provides methods to validate email addresses and phone numbers
-As well as a method to hash passwords using SHA-256.
-
-Version: 1.0
-Author: Shrivatsa Guru
- */
 package validation;
-public class Validator {
 
-    public boolean validateEmail(String email) throws ValidationException {
-        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-        if (!email.matches(emailRegex)) {
-            throw new ValidationException("Invalid email format");
-        }
-        return true;
+
+public final class Validator {
+    private Validator() {}
+
+    // --- Simple, readable patterns (UC6) ---
+    private static final String USER_RE = "^[A-Za-z][A-Za-z0-9_]{2,15}$";
+    private static final String EMAIL_RE = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+    private static final String PHONE_RE = "^\\d{10}$";
+    private static final String PASS_RE  = "^(?=.*[A-Za-z])(?=.*\\d).{6,}$";
+
+    // --- Sanitizers (trim, normalize) ---
+    public static String cleanUsername(String s) { return s == null ? "" : s.trim(); }
+    public static String cleanEmail(String s)    { return s == null ? "" : s.trim().toLowerCase(); }
+    public static String cleanPhone(String s)    { return s == null ? "" : s.replaceAll("\\s+", ""); }
+
+    // --- Fail-fast validators (throw custom exceptions) ---
+    public static void checkUsername(String s) throws InvalidUsernameException {
+        if (!s.matches(USER_RE)) throw new InvalidUsernameException();
     }
-
-    public boolean validatePhoneNumber(int phoneNumber) throws ValidationException {
-        String phoneRegex = "^[0-9]{10}$";
-        if (!String.valueOf(phoneNumber).matches(phoneRegex)) {
-            throw new ValidationException("Invalid phone number format");
-        }
-        return true;
+    public static void checkEmail(String s) throws InvalidEmailException {
+        if (!s.matches(EMAIL_RE)) throw new InvalidEmailException();
+    }
+    public static void checkPhone(String s) throws InvalidPhoneException {
+        if (!s.matches(PHONE_RE)) throw new InvalidPhoneException();
     }
 
 }

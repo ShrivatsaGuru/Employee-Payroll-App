@@ -38,8 +38,13 @@ public class Main {
                 System.out.print("Password: ");
                 String pass = sc.nextLine();
 
-                Employee e = reg.register(name, email, phone, role, pass);
-                System.out.println(e != null ? "[UC1] Registered ✔ " + e : "[UC1] Registration failed ✖ (check inputs)");
+                try {
+                    Employee e = reg.register(name, email, phone, role, pass);
+                    System.out.println("User Registered. " + e);
+                } catch (ValidationException vex) {
+                    // UC6: user-friendly messages
+                    System.out.println("Registration failed. " + vex.getMessage());
+                }
                 System.out.println();
             }
 
@@ -48,7 +53,7 @@ public class Main {
                 return;
             }
 
-            // ---------- UC2 + UC3 + UC4 ----------
+            // ---------- UC2 + UC3 + UC4 + UC5 ----------
             System.out.println("\n=== UC2: Login (type 'exit' to quit) ===");
             while (true) {
                 System.out.print("Username: ");
@@ -58,44 +63,42 @@ public class Main {
                 System.out.print("Password: ");
                 String p = sc.nextLine();
 
-                Session s = auth.loginByName(u, p);
-                if (s != null) {
+                try {
+                    Session s = auth.loginByName(u, p);
                     Employee emp = EmployeeRepository.getEmployeeByName(u);
-                   
-                    // UC3: Generate payslip (simple interactive)
+
+                    // UC3: Payslip
                     System.out.print("Generate payslip now? (y/n): ");
                     if (sc.nextLine().trim().equalsIgnoreCase("y")) {
                         double basic = readDouble(sc, "Enter Basic Pay: ");
                         double[] allowances = readDoubleList(sc, "Enter Allowances (comma-separated, or blank): ");
                         double[] otherDeds  = readDoubleList(sc, "Enter Other Deductions (comma-separated, or blank): ");
 
-                        SalaryComponents scmp = new SalaryComponents()
-                                .withBasic(basic)
-                                .withAllowances(allowances)
-                                .withDeductions(otherDeds);
-
+                        var scmp = new SalaryComponents().withBasic(basic).withAllowances(allowances).withDeductions(otherDeds);
                         var payslip = payroll.generatePayslip(emp, scmp);
-                        System.out.println(payslip); // print (UC3)
-                        var dash = dashboard.DashboardFactory.getDashboard(emp);
-                        dash.show(emp, payroll.getAll()); // show dashboard (UC5)
+                        System.out.println(payslip);
 
-                        // UC4: Offer to download as text
+                        // UC4: Download
                         System.out.print("Download payslip as text? (y/n): ");
                         if (sc.nextLine().trim().equalsIgnoreCase("y")) {
                             DownloadedPayslip dl = downloader.downloadAsText(payslip);
-                            System.out.println("Saved to: " + dl.getFullPath());
-                            System.out.println("Expired? " + dl.isExpired());
+                            System.out.println("Saved to: " + dl.getFullPath() + " | Expired? " + dl.isExpired());
                         }
                     }
+
+                    // UC5: Dashboard
+                    var dash = DashboardFactory.getDashboard(emp);
+                    dash.show(emp, payroll.getAll());
+
+                } catch (AuthFailedException aex) {
+                    System.out.println(" Login failed. " + aex.getMessage());
                 }
-                // --- UC5: Show dashboard automatically after login ---
-             
                 System.out.println("-----------------------------------");
             }
         }
     }
 
-    // --- small input helpers ---
+    // --- tiny helpers (unchanged) ---
     private static double readDouble(Scanner sc, String prompt) {
         System.out.print(prompt);
         String in = sc.nextLine().trim();
@@ -108,8 +111,10 @@ public class Main {
         String[] parts = line.split(",");
         double[] out = new double[parts.length];
         for (int i = 0; i < parts.length; i++) {
-            try { out[i] = Double.parseDouble(parts[i].trim()); } catch (Exception e) { out[i] = 0.0; }
+            try { out[i] = Double.parseDouble(parts[i].trim()); }
+            catch (Exception e) { out[i] = 0.0; }
         }
         return out;
     }
 }
+
