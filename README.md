@@ -1,11 +1,15 @@
-# Employee-Payroll-App- UC1- Use Case 1
+# EmployeePayrollApp
+Develop an Employee Payroll Management System that serves as a hands-on laboratory for mastering Object-Oriented Programming (OOP) concepts through real-world enterprise application development. The application demonstrates how core OOP principles solve complex business problems while maintaining code quality, scalability, and maintainability.
 
-A simple Java console application that demonstrates basic object‑oriented principles and user input validation while performing an employee registration use case. The program collects employee details, validates the data (email and phone number), hashes passwords, and stores the records in an in‑memory repository.
+## UC4 — Payslip Print / Download
 
-## Features
-
-- Employee entity with encapsulated fields
-- Input validation for email and 10‑digit phone numbers
-- SHA‑256 password hashing using the `Validator` utility
-- Simple repository for storing and retrieving employees by ID or name
-- Custom `ValidationException` for error handling
++ Allows authenticated employees to download or print their payslip.
++ Creates a deep copy of the payslip to preserve original data integrity.
++ Generates unique filenames using employee ID, month/year, and timestamp.
++ Saves payslips as text files in a dedicated Payslips/ directory.
++ Supports potential expansion for PDF or other formats.
++ Implements clone() and equals()/hashCode() for safe object duplication.
++ Ensures no modification occurs to the original payslip object.
++ Provides professional and version-controlled file naming.
++ Demonstrates object comparison, immutability, and file I/O.
++ Fully compatible with UC1–UC3; preserves all previous functionality.
