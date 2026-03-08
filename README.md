@@ -1,11 +1,15 @@
-# Employee-Payroll-App- UC1- Use Case 1
+# EmployeePayrollApp
+Develop an Employee Payroll Management System that serves as a hands-on laboratory for mastering Object-Oriented Programming (OOP) concepts through real-world enterprise application development. The application demonstrates how core OOP principles solve complex business problems while maintaining code quality, scalability, and maintainability.
 
-A simple Java console application that demonstrates basic object‑oriented principles and user input validation while performing an employee registration use case. The program collects employee details, validates the data (email and phone number), hashes passwords, and stores the records in an in‑memory repository.
+## UC6 — Input Validation
 
-## Features
-
-- Employee entity with encapsulated fields
-- Input validation for email and 10‑digit phone numbers
-- SHA‑256 password hashing using the `Validator` utility
-- Simple repository for storing and retrieving employees by ID or name
-- Custom `ValidationException` for error handling
++ Centralizes all user input validation for the payroll system.
++ Validates email formats using regular expressions.
++ Validates phone numbers to ensure correct digit count
++ Enforces password strength rules (uppercase, lowercase, digit, special character, min 8 chars).
++ Validates employee ID patterns (e.g., EMP1001).
++ Throws ValidationException for invalid inputs with user-friendly messages.
++ Ensures fail-fast validation to prevent processing of bad data.
++ Improves security through input sanitization.
++ Provides reusable validation utilities for UC1–UC5.
++ Enhances system robustness and consistency across all user interactions.
