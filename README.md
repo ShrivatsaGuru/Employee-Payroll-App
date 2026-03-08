@@ -1,11 +1,15 @@
-# Employee-Payroll-App- UC1- Use Case 1
+# EmployeePayrollApp
+Develop an Employee Payroll Management System that serves as a hands-on laboratory for mastering Object-Oriented Programming (OOP) concepts through real-world enterprise application development. The application demonstrates how core OOP principles solve complex business problems while maintaining code quality, scalability, and maintainability.
 
-A simple Java console application that demonstrates basic object‑oriented principles and user input validation while performing an employee registration use case. The program collects employee details, validates the data (email and phone number), hashes passwords, and stores the records in an in‑memory repository.
+## UC3 — Payslip Generation
 
-## Features
-
-- Employee entity with encapsulated fields
-- Input validation for email and 10‑digit phone numbers
-- SHA‑256 password hashing using the `Validator` utility
-- Simple repository for storing and retrieving employees by ID or name
-- Custom `ValidationException` for error handling
++ Allows authenticated employees to generate monthly payslips.
++ Accepts the month and year as input for the payslip.
++ Calculates gross salary components: basic, HRA, and allowances.
++ Applies statutory deductions: PF (Provident Fund) and Tax.
++ Computes the net payable amount dynamically.
++ Aggregates employee information and salary components into a Payslip object.
++ Provides a professional, formatted output using toString().
++ Supports multiple salary structures and months for historical tracking.
++ Demonstrates composition (Payslip HAS-A SalaryComponents) and aggregation (Payslip HAS-A Employee).
++ Fully compatible with UC1 registration and UC2 authentication — safe and modular.
